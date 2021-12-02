@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  div(id="join-container")
+    div(class="card", id="join-card")
+      div(class="card-body")
+        h2 qw3rt
+        h5(class="card-title") Join Private Chat
+        form(id="username-form" novalidate)
+          div(class="mb-3")
+          label(class="form-label", for="username") username
+          input(class="form-control", id="username", type="text")
+          div(id="invalid-username") Please choose a username
+        ul(class="nav nav-tabs", id="menu-tabs", role="tablist")
+          li(class="nav-item", role="presentation")
+            button(class="nav-link active", id="join-tab", data-bs-toggle="tab", data-bs-target="#join", type="button", role="tab", aria-controls="join", aria-selected="true") Join
+          li(class="nav-item", role="presentation")
+            button(class="nav-link", id="create-tab", data-bs-toggle="tab", data-bs-target="#create", type="button", role="tab", aria-controls="create", aria-selected="true") Create
+        div(class="tab-content", id="join-card-content")
+          div(class="tab-pane fade show active", id="join", role="tabpanel", aria-labelledby="join-tab")
+            form(id="join-form" novalidate)
+              label(class="form-label", for="chat-id") Enter your chat id to join
+              input(class="form-control", id="chat-id", name="chat-id", maxLength="100")
+              div(id="invalid-chat-id") Please enter the chat id
+            button(id="join-btn", class="menu-btn") Join
+          div(class="tab-pane fade", id="create", role="tabpanel", aria-labelledby="create-tab")
+            button(id="create-btn", class="menu-btn") Create Chat
+
+  script(src="/js/index.js")

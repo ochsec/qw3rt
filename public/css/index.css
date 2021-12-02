@@ -1,0 +1,53 @@
+body {
+  background-color: #1b1b32;
+  font-family: Roboto Mono, monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  text-align: center;
+  vertical-align: center;
+  width: 80%;
+  margin: auto;
+}
+
+#join-container {
+  max-width: 581px;
+  margin-top: 25%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#join-card {
+  padding: 10px 10px 40px 10px;
+  border-radius: 0;
+  text-decoration: none;
+}
+
+.card-body {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+form {
+  margin-top: 10px;
+}
+
+#invalid-username, #invalid-chat-id {
+  visibility: hidden;
+}
+
+#menu-tabs {
+  margin-top: 20px;
+}
+
+.menu-btn {
+  margin-top: 20px;
+  /* background-color: #3b3b4f; */
+  border-width: 3px;
+  border-radius: 0;
+  border-color: #f5f6f7;
+  text-decoration: none;
+  /* color: #f5f6f7; */
+}
