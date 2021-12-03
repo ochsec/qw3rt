@@ -9,6 +9,11 @@ const app = express()
 const PORT = 9999
 const clients = {}
 
+mongoose.connect(process.env.MONGO_TEST_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+
 function broadcast(message) {
   for (let client in clients) {
     clients[client].write(JSON.stringify(message))
@@ -29,10 +34,22 @@ const server = http.createServer(app);
 const chatIO = sockjs.createServer()
 chatIO.on('connection', function(conn) {
   clients[conn.id] = conn
+  console.log(conn.id)
 
-  conn.on('data', function(message) {
-    console.log(message)
-    broadcast(JSON.parse(message))
+  conn.on('data', function(data) {
+    console.log(data)
+    const {event, username, chatId, message} = JSON.parse(data);
+
+    switch(event) {
+      case 'join':
+        console.log(`User ${username} has requested to join chat ${chatId}.`)
+        break;
+      case 'create':
+        console.log(`User ${username} is creating a new chat.`)
+      case 'message':
+        broadcast(message)
+        break;
+    }
   })
 
   conn.on('close', function() {

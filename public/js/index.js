@@ -33,9 +33,20 @@ const onJoinClicked = () => {
   const uValid = usernameIsValid()
   const cValid = chatIdIsValid()
   if (!uValid || !cValid) return
+
+  sock.send(JSON.stringify({
+    event: 'join',
+    username: username.textContent,
+    chatId: chatId.textContent
+  }))
 }
 const onCreateClicked = () => {
   if (!usernameIsValid()) return
+
+  sock.send(JSON.stringify({
+    event: 'create',
+    username: username.textContent
+  }))
 }
 
 username.addEventListener('input', onUsernameChange)

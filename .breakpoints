@@ -3,17 +3,25 @@
     "public/js/index.js": [
       {
         "id": "02be9ada-81a4-474d-8d6b-7b3996e5e02e",
-        "line": 10,
-        "version": 318,
-        "index": 241
+        "line": 57,
+        "version": 1998,
+        "index": 1558
+      }
+    ],
+    "test/user.spec.js": [
+      {
+        "id": "6faa942e-dff8-4543-a188-bd2c18aa112e",
+        "line": 31,
+        "version": 337,
+        "index": 647
       }
     ],
     "views/index.pug": [
       {
         "id": "fc91d741-607a-4600-a2fe-482b3e4d2524",
-        "line": 12,
-        "version": 1295,
-        "index": 376
+        "line": 14,
+        "version": 1630,
+        "index": 471
       }
     ]
   }
