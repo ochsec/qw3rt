@@ -3,17 +3,17 @@
     "public/js/index.js": [
       {
         "id": "02be9ada-81a4-474d-8d6b-7b3996e5e02e",
-        "line": 57,
-        "version": 1998,
-        "index": 1558
+        "line": 56,
+        "version": 2062,
+        "index": 1637
       }
     ],
     "test/user.spec.js": [
       {
         "id": "6faa942e-dff8-4543-a188-bd2c18aa112e",
-        "line": 31,
-        "version": 337,
-        "index": 647
+        "line": 33,
+        "version": 662,
+        "index": 703
       }
     ],
     "views/index.pug": [

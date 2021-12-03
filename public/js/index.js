@@ -48,6 +48,13 @@ const onCreateClicked = () => {
     username: username.textContent
   }))
 }
+sock.onmessage = (e) => {
+  const data = JSON.parse(e.data)
+  switch(data.event) {
+    case 'create-success':
+      window.location.href = `https://qw3rt.ochsec1.repl.co/${data.chatId}`
+  }
+}
 
 username.addEventListener('input', onUsernameChange)
 chatId.addEventListener('input', onChatIdChange)

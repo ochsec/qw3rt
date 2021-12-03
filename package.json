@@ -19,7 +19,8 @@
     "mongoose": "^6.0.14",
     "nodemon": "^2.0.15",
     "pug": "^3.0.2",
-    "sockjs": "^0.3.21"
+    "sockjs": "^0.3.21",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "jest": "^27.4.3",
