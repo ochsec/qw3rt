@@ -27,17 +27,31 @@ const onChatIdChange = (e) => {
   invalidChatId.style.visibility= 'hidden'
   chatId.textContent = e.target.value
 }
-const onJoinClicked = () => {
+const onJoinClicked = async () => {
   const uValid = usernameIsValid()
   const cValid = chatIdIsValid()
   if (!uValid || !cValid) return
 
-  sock.send(JSON.stringify({
-    event: 'join',
-    username: username.textContent,
-    chatId: chatId.textContent
-  }))
+  fetch('/join', {
+    method: 'POST',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username.textContent,
+      chatId: chatId.textContent
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    sessionStorage.setItem('username', data.username)
+    sessionStorage.setItem('chatId', data.chatId)
+    window.location.href = `/${data.chatId}`
+  })
+  .catch(error => console.log(error))
 }
+
 const onCreateClicked = async () => {
   if (!usernameIsValid()) return
   fetch('/create', {
@@ -54,31 +68,10 @@ const onCreateClicked = async () => {
   .then(data => {
     sessionStorage.setItem('username', data.username)
     sessionStorage.setItem('chatId', data.chatId)
-      window.location.href = `/${data.chatId}`
+    window.location.href = `/${data.chatId}`
   })
   .catch(error => console.log(error))
-
-
-  // window.location.assign(`/chat/${response.chatId}`)
 }
-/*
-sock.onmessage = (e) => {
-  const data = JSON.parse(e.data)
-  switch(data.event) {
-    case 'create-success':
-      sessionStorage.setItem('username', data.username)
-      sessionStorage.setItem('socketId', data.socketId)
-      window.location.href = `https://qw3rt.ochsec1.repl.co/${data.chatId}`
-      break
-    case 'join-success':
-      window.location.href = `https://qw3rt.ochsec1.repl.co/${data.chatId}`
-      break
-    case 'error':
-      console.log(e.data)
-      break
-  }
-}
-*/
 
 username.addEventListener('input', onUsernameChange)
 chatId.addEventListener('input', onChatIdChange)
