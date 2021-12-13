@@ -34,19 +34,6 @@ const main = async () => {
 
   app.set('view engine', 'pug')
 
-  app.get('/', (req, res) => {
-    res.render('index', {title: 'qw3rt', message: 'qw3rt'})
-  })
-
-  app.get('/:id', (req, res) => {
-    res.render('chat', {chatId: req.params.id})
-  })
-
-  app.post('/:id', (req, res) => {
-    const username = req.body.username
-    res.render('chat', { chatId: req.params.id, username })
-  })
-
   app.post('/create', async (req, res) => {
     console.log(req.body)
     const username = req.body.username
@@ -65,6 +52,19 @@ const main = async () => {
     console.log(`User ${username} has requested to join chat ${chatId}.`)
     response = await findAndJoinChat(chatId, username, conn.id)
   })
+
+  app.get('/', (req, res) => {
+    res.render('index', {title: 'qw3rt', message: 'qw3rt'})
+  })
+
+  app.get('/:id', (req, res) => {
+    res.render('chat', {chatId: req.params.id})
+  })
+
+  app.post('/:id', (req, res) => {
+    const username = req.body.username
+    res.render('chat', { chatId: req.params.id, username })
+  })  
 
   const server = http.createServer(app)
   const chatIO = sockjs.createServer()
