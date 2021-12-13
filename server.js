@@ -2,12 +2,18 @@ require('dotenv').config()
 const path = require('path')
 const http = require('http')
 const express = require('express')
+const session = require('express-session')
+const bodyParser = require('body-parser')
 const sockjs = require('sockjs')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const app = express()
 const PORT = 9999
-const { createUserNewChat } = require('./dao/service')
+const { 
+  createUserNewChat, 
+  findAndJoinChat,
+  getUsersInChat,
+} = require('./dao/service')
 const clients = {}
 
 const main = async () => {
@@ -16,13 +22,14 @@ const main = async () => {
     useUnifiedTopology: true
   })
 
-  function broadcast(message) {
-    for (let client in clients) {
-      clients[client].write(JSON.stringify(message))
+  function broadcast(message, users) {
+    for (let user in users) {
+      user.socketId.write(JSON.stringify(message))
     }
   }
 
   app.use(cors())
+  app.use(bodyParser.json())
   app.use(express.static(path.join(__dirname, 'public')))
 
   app.set('view engine', 'pug')
@@ -35,6 +42,30 @@ const main = async () => {
     res.render('chat', {chatId: req.params.id})
   })
 
+  app.post('/:id', (req, res) => {
+    const username = req.body.username
+    res.render('chat', { chatId: req.params.id, username })
+  })
+
+  app.post('/create', async (req, res) => {
+    console.log(req.body)
+    const username = req.body.username
+    console.log(`User ${username} is creating a new chat.`)
+    let data
+    try {
+      data = await createUserNewChat({ username })
+      console.log(data)
+      res.json(data)
+    } catch (error) {
+      console.log(error)
+    }
+  })
+
+  app.post('/join', async (req, res) => {
+    console.log(`User ${username} has requested to join chat ${chatId}.`)
+    response = await findAndJoinChat(chatId, username, conn.id)
+  })
+
   const server = http.createServer(app)
   const chatIO = sockjs.createServer()
 
@@ -45,26 +76,23 @@ const main = async () => {
     conn.on('data', async (data) => {
       console.log(data)
       const {event, username, chatId, message} = JSON.parse(data);
+      let response;
 
       switch(event) {
         case 'join':
           console.log(`User ${username} has requested to join chat ${chatId}.`)
+          response = await findAndJoinChat(chatId, username, conn.id)
+          console.log(response)
+          conn.write(JSON.stringify(response))
           break;
         case 'create':
           console.log(`User ${username} is creating a new chat.`)
-          const id = await createUserNewChat({username, socketId: conn.id})
-          console.log(id)
-          if (id) {
-            const response = {
-              event: 'create-success',
-              chatId: id
-            }
-            conn.write(JSON.stringify(response))
-          }
-          
+          response = await createUserNewChat({username, socketId: conn.id})
+          conn.write(JSON.stringify(response))
           break;
         case 'message':
-          broadcast(message)
+          response = await getUsersInChat(chatId)
+          broadcast(message, users)
           break;
       }
     })

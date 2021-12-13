@@ -1,5 +1,3 @@
-const sock = new SockJS('https://qw3rt.ochsec1.repl.co/chat')
-
 const username = document.getElementById('username')
 const invalidUsername = document.getElementById('invalid-username')
 const chatId = document.getElementById('chat-id')
@@ -40,21 +38,45 @@ const onJoinClicked = () => {
     chatId: chatId.textContent
   }))
 }
-const onCreateClicked = () => {
+const onCreateClicked = async () => {
   if (!usernameIsValid()) return
+  fetch('/create', {
+    method: 'POST',
+    cache: 'no-cache',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        username: username.textContent
+      })
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data)
+  })
+  .catch(error => console.log(error))
 
-  sock.send(JSON.stringify({
-    event: 'create',
-    username: username.textContent
-  }))
+
+  // window.location.assign(`/chat/${response.chatId}`)
 }
+/*
 sock.onmessage = (e) => {
   const data = JSON.parse(e.data)
   switch(data.event) {
     case 'create-success':
+      sessionStorage.setItem('username', data.username)
+      sessionStorage.setItem('socketId', data.socketId)
       window.location.href = `https://qw3rt.ochsec1.repl.co/${data.chatId}`
+      break
+    case 'join-success':
+      window.location.href = `https://qw3rt.ochsec1.repl.co/${data.chatId}`
+      break
+    case 'error':
+      console.log(e.data)
+      break
   }
 }
+*/
 
 username.addEventListener('input', onUsernameChange)
 chatId.addEventListener('input', onChatIdChange)

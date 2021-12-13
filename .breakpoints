@@ -1,19 +1,35 @@
 {
   "files": {
+    "dao/service.js": [
+      {
+        "id": "aeb8ff86-69cb-4b28-8655-5b4f91d0e053",
+        "line": 15,
+        "version": 1690,
+        "index": 308
+      }
+    ],
     "public/js/index.js": [
       {
         "id": "02be9ada-81a4-474d-8d6b-7b3996e5e02e",
-        "line": 56,
-        "version": 2062,
-        "index": 1637
+        "line": 85,
+        "version": 3396,
+        "index": 2629
+      }
+    ],
+    "server.js": [
+      {
+        "id": "e8abc3d3-80f7-49b2-afc4-1e0ded6e7f40",
+        "line": 51,
+        "version": 2871,
+        "index": 1243
       }
     ],
     "test/user.spec.js": [
       {
         "id": "6faa942e-dff8-4543-a188-bd2c18aa112e",
-        "line": 33,
-        "version": 662,
-        "index": 703
+        "line": 34,
+        "version": 927,
+        "index": 741
       }
     ],
     "views/index.pug": [

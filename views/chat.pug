@@ -2,4 +2,14 @@ extends layout
 
 block content
   div(id="chat-container")
-    h2(id="chatroom-id")= chatId
+    h4(id="chatroom-id")= chatId
+
+    div(id="chat-window", class="card") Stuff
+
+    form(id="message-form" novalidate)
+      div(class="input-group")
+        input(type="text", id="message", class="form-control", aria-label="Message to send",
+        aria-describedby="send-message-button")
+        button(type="button", id="send-btn") Send
+      
+  script(src="/js/chat.js")

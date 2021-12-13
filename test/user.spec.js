@@ -1,11 +1,12 @@
 const { v4 } = require('uuid')
 const mongoose = require('mongoose')
 const { userSchema } = require('../dao/schemas')
-const { createUser, findOneUser, findUsersInChat } = require('../dao/queries')
+const { createUser, findOneUserInChat, findUsersInChat } = require('../dao/queries')
 
 describe('User CRUD', () => {
   let User;
   let chatId;
+  let userOneName = 'testdeb'
 
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_TEST_URI, {
@@ -25,7 +26,7 @@ describe('User CRUD', () => {
     chatId = v4()
 
     let userOne = {
-      username: 'testdeb',
+      username: userOneName,
       chatId,
       socketId: v4()
     }
@@ -51,5 +52,12 @@ describe('User CRUD', () => {
 
     expect(users.length).toBe(2)
     expect(users[1].chatId).toBe(chatId)
+  })
+
+  it('find one user in chat', async () => {
+    const user = await findOneUserInChat(userOneName, chatId)
+
+    expect(user.username).toBe(userOneName)
+    expect(user._id).toBeDefined
   })
 })

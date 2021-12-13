@@ -4,22 +4,13 @@ const { userSchema, messageSchema } = require('./schemas')
 const User = mongoose.model('User', userSchema)
 const Message = mongoose.model('Message', messageSchema)
 
-const findUser = (username) => {
-  User.find({username}, (error, data) => {
-    if (error) {
-      return error
-    }
-    return data
-  })
-}
-
-const findOneUser = (username, chatId) => {
-  User.findOne({username, chatId}, (error, data) => {
-    if (error) {
-      return error
-    }
-    return data
-  })
+const findOneUserInChat = async (username, chatId) => {
+  try {
+    const user = User.findOne({username, chatId})
+    return user
+  } catch (error) {
+    return error
+  }
 }
 
 const createUser = async ({username, chatId, socketId}) => {
@@ -49,6 +40,6 @@ const findUsersInChat = async (chatId) => {
 
 module.exports = {
   createUser,
-  findOneUser,
+  findOneUserInChat,
   findUsersInChat,
 }
