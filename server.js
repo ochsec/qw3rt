@@ -49,12 +49,16 @@ const main = async () => {
   })
 
   app.post('/join', async (req, res) => {
+    const { username, chatId } = req.body
     console.log(`User ${username} has requested to join chat ${chatId}.`)
-    response = await findAndJoinChat(chatId, username, conn.id)
-  })
-
-  app.get('/', (req, res) => {
-    res.render('index', {title: 'qw3rt', message: 'qw3rt'})
+    let data
+    try {
+      data = await findAndJoinChat(chatId, username)
+      console.log(data)
+      res.json(data)
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   app.get('/:id', (req, res) => {
@@ -66,6 +70,10 @@ const main = async () => {
     res.render('chat', { chatId: req.params.id, username })
   })  
 
+  app.get('/', (req, res) => {
+    res.render('index', {title: 'qw3rt', message: 'qw3rt'})
+  })
+
   const server = http.createServer(app)
   const chatIO = sockjs.createServer()
 
@@ -75,26 +83,8 @@ const main = async () => {
 
     conn.on('data', async (data) => {
       console.log(data)
-      const {event, username, chatId, message} = JSON.parse(data);
-      let response;
+      const {username, chatId, message} = JSON.parse(data);
 
-      switch(event) {
-        case 'join':
-          console.log(`User ${username} has requested to join chat ${chatId}.`)
-          response = await findAndJoinChat(chatId, username, conn.id)
-          console.log(response)
-          conn.write(JSON.stringify(response))
-          break;
-        case 'create':
-          console.log(`User ${username} is creating a new chat.`)
-          response = await createUserNewChat({username, socketId: conn.id})
-          conn.write(JSON.stringify(response))
-          break;
-        case 'message':
-          response = await getUsersInChat(chatId)
-          broadcast(message, users)
-          break;
-      }
     })
 
     conn.on('close', function() {

@@ -40,9 +40,15 @@ const findAndJoinChat = async (chatId, username, socketId) => {
   const result = await createUser({
     username,
     chatId,
-    socketId,
   })
-  return { event: 'join-success', chatId }
+  if (result && result._id) {
+    return {
+      username,
+      chatId
+    }
+  } else {
+    return createErrorObject('Chat does not exist')
+  }
 }
 
 const getUsersInChat = async (chatId) => {
