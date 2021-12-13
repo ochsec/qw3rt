@@ -52,7 +52,9 @@ const onCreateClicked = async () => {
   })
   .then(response => response.json())
   .then(data => {
-    console.log(data)
+    sessionStorage.setItem('username', data.username)
+    sessionStorage.setItem('chatId', data.chatId)
+      window.location.href = `/${data.chatId}`
   })
   .catch(error => console.log(error))
 
