@@ -45,9 +45,14 @@ const onJoinClicked = async () => {
   })
   .then(response => response.json())
   .then(data => {
-    sessionStorage.setItem('username', data.username)
-    sessionStorage.setItem('chatId', data.chatId)
-    window.location.href = `/${data.chatId}`
+    if (data.status === 'success') {
+      sessionStorage.setItem('username', data.username)
+      sessionStorage.setItem('chatId', data.chatId)
+      sessionStorage.setItem('token', data.token)
+      window.location.href = `/${data.chatId}`
+    } else {
+      console.log(data.message)
+    }
   })
   .catch(error => console.log(error))
 }
@@ -66,9 +71,14 @@ const onCreateClicked = async () => {
   })
   .then(response => response.json())
   .then(data => {
-    sessionStorage.setItem('username', data.username)
-    sessionStorage.setItem('chatId', data.chatId)
-    window.location.href = `/${data.chatId}`
+    if (data.status === 'success') {
+      sessionStorage.setItem('username', data.username)
+      sessionStorage.setItem('chatId', data.chatId)
+      sessionStorage.setItem('token', data.token)
+      window.location.href = `/${data.chatId}`
+    } else {
+      console.log(data.message)
+    }
   })
   .catch(error => console.log(error))
 }

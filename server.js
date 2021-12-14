@@ -2,7 +2,7 @@ require('dotenv').config()
 const path = require('path')
 const http = require('http')
 const express = require('express')
-const session = require('express-session')
+const jwt = require('jsonwebtoken')
 const bodyParser = require('body-parser')
 const sockjs = require('sockjs')
 const mongoose = require('mongoose')
@@ -35,29 +35,30 @@ const main = async () => {
   app.set('view engine', 'pug')
 
   app.post('/create', async (req, res) => {
-    console.log(req.body)
-    const username = req.body.username
-    console.log(`User ${username} is creating a new chat.`)
-    let data
+    console.log(`User ${req.body.username} is creating a new chat.`)
     try {
-      data = await createUserNewChat({ username })
-      console.log(data)
-      res.json(data)
+      const { username, chatId } = await createUserNewChat({ username: req.body.username })
+      const token = jwt.sign({
+        username,
+        chatId
+      }, process.env.JWT_SECRET, { expiresIn: '30 days' })
+      res.json({ status: 'success', token, username, chatId })
     } catch (error) {
-      console.log(error)
+      res.json({ status: 'error', error })
     }
   })
 
   app.post('/join', async (req, res) => {
-    const { username, chatId } = req.body
-    console.log(`User ${username} has requested to join chat ${chatId}.`)
-    let data
+    console.log(`User ${req.body.username} has requested to join chat ${req.body.chatId}.`)
     try {
-      data = await findAndJoinChat(chatId, username)
-      console.log(data)
-      res.json(data)
+      const { username, chatId } = await findAndJoinChat(chatId, username)
+      const token = jwt.sign({
+        username,
+        chatId
+      }, process.env.JWT_SECRET, { expiresIn: '30 days' })
+      res.json({ status: 'success', token, username, chatId })
     } catch (error) {
-      console.log(error)
+      res.json({ status: 'error', error })
     }
   })
 
@@ -66,8 +67,17 @@ const main = async () => {
   })
 
   app.post('/:id', (req, res) => {
-    const username = req.body.username
-    res.render('chat', { chatId: req.params.id, username })
+    jwt.verify(req.body.token, process.env.JWT_SECRET, (error, decoded) => {
+      if (error) {
+        res.json({ status: 'error', error })
+      }
+
+      if ((decoded.username === req.body.username) && (decoded.chatId === req.body.chatId)) {
+        res.json({ status: 'success', message: 'jsonwebtoken verified' })
+      } else {
+        res.json({ status: 'error', message: "username or chatId don't match" })
+      }
+    })
   })  
 
   app.get('/', (req, res) => {
@@ -79,12 +89,26 @@ const main = async () => {
 
   chatIO.on('connection', async (conn) => {
     clients[conn.id] = conn
-    console.log(conn.id)
 
     conn.on('data', async (data) => {
-      console.log(data)
-      const {username, chatId, message} = JSON.parse(data);
-
+      const {event, username, chatId, message, token, sessionId} = JSON.parse(data);
+      jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+        if (error) {
+          
+        }
+  
+        if ((decoded.username === req.body.username) && (decoded.chatId === req.body.chatId)) {
+          switch(event) {
+            case 'session':
+              // update user record with session id
+              break
+            default:
+              // broadcast message
+          }
+        } else {
+          
+        }
+      })      
     })
 
     conn.on('close', function() {

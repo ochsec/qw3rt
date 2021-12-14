@@ -4,7 +4,7 @@ const {
   findUsersInChat
 } = require('./queries')
 
-const createUserNewChat = async ({username,  socketId}) => {
+const createUserNewChat = async ({username}) => {
   const chatId = v4()
   const result = await createUser({
     username,

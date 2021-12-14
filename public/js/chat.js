@@ -1,25 +1,17 @@
-const sock = new SockJS('https://qw3rt.ochsec1.repl.co/chat')
-
+//const sock = new SockJS('https://qw3rt.ochsec1.repl.co/chat')
+const sock = new SockJS('http://localhost:9999/chat')
 const message = document.getElementById('message')
 const sendBtn = document.getElementById('send-btn')
-/**
- * Message format
- * {
- *  username,
- *  message,
- *  datetime
- * }
- */
+
 let messages = []
-let username
-let chatId
+let username, chatId, token, sessionId
 
 const checkForSessionVariables = async () => {
     const urlSplit = window.location.href.split('/')
     const chatIdFromUrl = urlSplit[urlSplit.length - 1]
     username = sessionStorage.getItem('username')
     chatId = sessionStorage.getItem('chatId')
-
+    token = sessionStorage.getItem('token')
 
     if (!username) {
         window.location.href = '/'
@@ -30,24 +22,41 @@ const checkForSessionVariables = async () => {
     }
 
     // Todo: Verify user
-    // fetch('/verify', {
-    //     method: 'POST',
-    //     cache: 'no-cache',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         username,
-    //         chatId
-    //     })
-    // })
-    // .then(response => response.json())
-    // .then(data => {
-
-    // })
+    fetch(`/${chatId}`, {
+        method: 'POST',
+        cache: 'no-cache',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username,
+            chatId,
+            token
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'error') {
+            window.location.href = '/'
+        }
+    })
 }
 
-document.addEventListener('DOMContentLoaded', checkForSessionVariables)
+sock.onopen = () => {
+    const urlFrags = sock._transport.url.split('/')
+    sessionId = urlFrags[urlFrags.length - 2]
+    const sendData = {
+        event: 'session',
+        username,
+        chatId,
+        message: 'Inform socket session id',
+        token,
+        sessionId
+    }
+
+    sock.send(JSON.stringify(sendData))
+}
+sock.onclose = () => console.log('Websocket connection closed')
 
 sock.onmessage = (e) => {
   const data = JSON.parse(e.data)
@@ -56,15 +65,21 @@ sock.onmessage = (e) => {
 }
 
 const onSendClicked = () => {
-    const msg = message
-    if (msg.textContent.length === 0) {
+    if (message.value === 0) {
         return
     }
 
     const sendData = {
+        event: 'message',
         username,
-        message: msg.textContent
+        chatId,
+        message: message.value,
+        token,
+        sessionId
     }    
 
     sock.send(JSON.stringify(sendData))
 }
+
+document.addEventListener('DOMContentLoaded', checkForSessionVariables)
+sendBtn.addEventListener('click', onSendClicked)
