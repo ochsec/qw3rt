@@ -10,7 +10,7 @@ block content
           div(class="mb-3")
           label(class="form-label", for="username") username
           input(class="form-control", id="username", type="text")
-          div(id="invalid-username") Please choose a username
+          div(id="invalid-username")
         ul(class="nav nav-tabs", id="menu-tabs", role="tablist")
           li(class="nav-item", role="presentation")
             button(class="nav-link active", id="join-tab", data-bs-toggle="tab", data-bs-target="#join", type="button", role="tab", aria-controls="join", aria-selected="true") Join
@@ -21,7 +21,7 @@ block content
             form(id="join-form" novalidate)
               label(class="form-label", for="chat-id") Enter your chat id to join
               input(class="form-control", id="chat-id", name="chat-id", maxLength="100")
-              div(id="invalid-chat-id") Please enter the chat id
+              div(id="invalid-chat-id")
             button(id="join-btn", class="menu-btn") Join
           div(class="tab-pane fade", id="create", role="tabpanel", aria-labelledby="create-tab")
             button(id="create-btn", class="menu-btn") Create Chat

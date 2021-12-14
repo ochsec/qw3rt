@@ -29,10 +29,10 @@ const checkChatExists = async (chatId) => {
   }
 }
 
-const findAndJoinChat = async (chatId, username, socketId) => {
-  const users = await checkChatExists(chatId)
-  if (!users) {
-    return createErrorObject(`Chat with Id ${chatId} not found`)
+const findAndJoinChat = async (chatId, username) => {
+  const data = await checkChatExists(chatId)
+  if (data.status === 'error') {
+    return data
   }
   if (users.filter(u => u.username === username).length > 0) {
     return createErrorObject('Username taken')
@@ -59,7 +59,9 @@ const getUsersInChat = async (chatId) => {
   return users;
 }
 
-const createErrorObject = (message) => {event: 'error', message }
+const createErrorObject = (message) => {
+  return {status: 'error', message }
+}
 
 module.exports = {
   createUserNewChat,

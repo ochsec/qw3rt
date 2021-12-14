@@ -1,3 +1,4 @@
+const res = require('express/lib/response')
 const jwt = require('jsonwebtoken')
 const { 
   createUserNewChat, 
@@ -20,16 +21,25 @@ const addRoutes = (app) => {
         }
       })
     
-      app.post('/join', async (req, res) => {
+      app.post('/join', async(req, res) => {
         console.log(`User ${req.body.username} has requested to join chat ${req.body.chatId}.`)
         try {
-          const { username, chatId } = await findAndJoinChat(req.body.chatId, req.body.username)
-          const token = jwt.sign({
-            username,
-            chatId
-          }, process.env.JWT_SECRET, { expiresIn: '30 days' })
-          res.json({ status: 'success', token, username, chatId })
+          const data = await findAndJoinChat(req.body.chatId, req.body.username)
+          let response
+
+          if (data.status === 'error') {
+            response = { status: 'error', message: data.message }
+          } else {
+            const token = jwt.sign({
+              username: data.username,
+              username: data.chatId
+            }, process.env.JWT_SECRET, { expiresIn: '30 days' })
+            response = { status: 'success', token, username: data.username, chatId: data.chatId }
+          }
+          
+          res.json(response)
         } catch (error) {
+          console.log(error)
           res.json({ status: 'error', error })
         }
       })

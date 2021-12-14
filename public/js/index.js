@@ -7,6 +7,7 @@ const createBtn = document.getElementById('create-btn')
 
 const usernameIsValid = () => {
   if (!username.textContent) {
+    invalidUsername.textContent = 'Please choose a username'
     invalidUsername.style.visibility = 'visible'
     return false
   }
@@ -14,6 +15,7 @@ const usernameIsValid = () => {
 }
 const chatIdIsValid = () => {
   if (!chatId.textContent) {
+    invalidChatId.textContent = 'Please enter the chat id'
     invalidChatId.style.visibility = 'visible'
     return false
   }
@@ -50,8 +52,11 @@ const onJoinClicked = async () => {
       sessionStorage.setItem('chatId', data.chatId)
       sessionStorage.setItem('token', data.token)
       window.location.href = `/${data.chatId}`
-    } else {
-      console.log(data.message)
+    } else if (data.status === 'error') {
+      invalidUsername.textContent = data.message
+      invalidUsername.style.visibility = 'visible'
+    } else { 
+        console.log(data)
     }
   })
   .catch(error => console.log(error))
@@ -76,8 +81,11 @@ const onCreateClicked = async () => {
       sessionStorage.setItem('chatId', data.chatId)
       sessionStorage.setItem('token', data.token)
       window.location.href = `/${data.chatId}`
+    } else if (data.status === 'error') { 
+      invalidUsername.textContent = data.message
+      invalidUsername.style.visibility = 'visible'
     } else {
-      console.log(data.message)
+      console.log(data)
     }
   })
   .catch(error => console.log(error))
