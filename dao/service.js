@@ -2,7 +2,8 @@ const { v4 } = require('uuid')
 const { 
   createUser, 
   findUsersInChat,
-  updateUser
+  updateUser,
+  createMessage
 } = require('./queries')
 
 const createUserNewChat = async ({username}) => {
@@ -35,7 +36,7 @@ const findAndJoinChat = async (chatId, username) => {
   if (data.status === 'error') {
     return data
   }
-  if (users.filter(u => u.username === username).length > 0) {
+  if (data.filter(u => u.username === username).length > 0) {
     return createErrorObject('Username taken')
   }
   const result = await createUser({
@@ -44,8 +45,8 @@ const findAndJoinChat = async (chatId, username) => {
   })
   if (result && result._id) {
     return {
-      username,
-      chatId
+      username: result.username,
+      chatId: result.chatId
     }
   } else {
     return createErrorObject('Chat does not exist')
@@ -65,6 +66,15 @@ const updateUserWithSocketId = async ({username, chatId, socketId}) => {
   return result
 }
 
+const saveMessage = async ({username, chatId, content}) => {
+  const result = await createMessage({username, chatId, content })
+  if (result && result._id) {
+    return result
+  } else {
+    return createErrorObject('Unable to create chat')
+  }
+}
+
 const createErrorObject = (message) => {
   return {status: 'error', message }
 }
@@ -75,4 +85,5 @@ module.exports = {
   findAndJoinChat,
   getUsersInChat,
   updateUserWithSocketId,
+  saveMessage
 }

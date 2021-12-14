@@ -74,7 +74,7 @@ const onSendClicked = () => {
         event: 'message',
         username,
         chatId,
-        message: message.value,
+        content: message.value,
         token,
         socketId
     }    

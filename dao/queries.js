@@ -28,6 +28,15 @@ const createUser = async ({username, chatId}) => {
   }
 }
 
+const findUsersInChat = async (chatId) => {
+  try {
+    const result = User.find({chatId})
+    return result
+  } catch (error) {
+    return error
+  }
+}
+
 const updateUser = async ({username, chatId, socketId}) => {
   const filter = { username, chatId }
   const update = { socketId }
@@ -40,9 +49,12 @@ const updateUser = async ({username, chatId, socketId}) => {
   }
 }
 
-const findUsersInChat = async (chatId) => {
+const createMessage = async ({content, username, chatId}) => {
+  const message = new Message({
+    content, username, chatId
+  })
   try {
-    const result = User.find({chatId})
+    const result = await message.save()
     return result
   } catch (error) {
     return error
@@ -54,4 +66,5 @@ module.exports = {
   findOneUserInChat,
   findUsersInChat,
   updateUser,
+  createMessage,
 }

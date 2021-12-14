@@ -32,7 +32,7 @@ const addRoutes = (app) => {
           } else {
             const token = jwt.sign({
               username: data.username,
-              username: data.chatId
+              chatId: data.chatId
             }, process.env.JWT_SECRET, { expiresIn: '30 days' })
             response = { status: 'success', token, username: data.username, chatId: data.chatId }
           }
@@ -54,6 +54,8 @@ const addRoutes = (app) => {
             res.json({ status: 'error', error })
           }
     
+          console.log('decoded.username: ' + decoded.username)
+          console.log('decoded.chatId: ' + decoded.chatId)
           if ((decoded.username === req.body.username) && (decoded.chatId === req.body.chatId)) {
             res.json({ status: 'success', message: 'jsonwebtoken verified' })
           } else {

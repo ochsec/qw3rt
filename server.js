@@ -12,6 +12,7 @@ const PORT = 9999
 const addRoutes = require('./routes')
 const { 
   updateUserWithSocketId,
+  saveMessage
 } = require('./dao/service')
 const clients = {}
 
@@ -20,12 +21,6 @@ const main = async () => {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
-
-  function broadcast(message, users) {
-    for (let user in users) {
-      user.socketId.write(JSON.stringify(message))
-    }
-  }
 
   app.use(cors())
   app.use(bodyParser.json())
@@ -40,17 +35,18 @@ const main = async () => {
 
   chatIO.on('connection', async (conn) => {
     conn.on('data', async (data) => {
-      const {event, username, chatId, message, token, socketId} = JSON.parse(data);
+      const {event, username, chatId, content, token, socketId} = JSON.parse(data);
       jwt.verify(token, process.env.JWT_SECRET, async (error, decoded) => {
         if (error) {
           
         }
   
         if ((decoded.username === username) && (decoded.chatId === chatId)) {
+          let result
           switch(event) {
             case 'session':
               // update user record with session id
-              const result = await updateUserWithSocketId({username, chatId, socketId})
+              result = await updateUserWithSocketId({username, chatId, socketId})
               console.log(result)
               if (result.socketId) {
                 if (!clients[chatId]) {
@@ -61,18 +57,42 @@ const main = async () => {
                 
                 console.log(clients)
 
-                let message = { status: 'success', message: 'User socket id registered' }
+                let message = { 
+                  status: 'success', 
+                  event: 'register', 
+                  message: 'User socket id registered'
+                }
                 conn.write(JSON.stringify(message))
               } else {
-                let message = { status: 'error', message: 'There was an error registering the socket id' }
-                socketId.write(JSON.stringify(message))
+                let message = { 
+                  status: 'error',
+                  event: 'register',
+                  message: 'There was an error registering the socket id' 
+                }
+                conn.write(JSON.stringify(message))
               }
               break
             default:
+              // save message
+              result = await saveMessage({username, chatId, content})
+              if (result.status === 'error') {
+                console.log('There was an error saving the message')
+              }
               // broadcast to chat members
+              clients[chatId].forEach(user => {
+                user.write(JSON.stringify({
+                  status: 'success',
+                  event: 'broadcast',
+                  message: result.content
+                }))
+              })
           }
         } else {
-          
+          conn.write(JSON.stringify({
+            status: 'error',
+            event: 'register',
+            message: 'Invalid token for user'
+          }))
         }
       })      
     })
