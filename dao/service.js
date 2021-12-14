@@ -1,7 +1,8 @@
 const { v4 } = require('uuid')
 const { 
   createUser, 
-  findUsersInChat
+  findUsersInChat,
+  updateUser
 } = require('./queries')
 
 const createUserNewChat = async ({username}) => {
@@ -59,6 +60,11 @@ const getUsersInChat = async (chatId) => {
   return users;
 }
 
+const updateUserWithSocketId = async ({username, chatId, socketId}) => {
+  const result = updateUser({username, chatId, socketId})
+  return result
+}
+
 const createErrorObject = (message) => {
   return {status: 'error', message }
 }
@@ -68,4 +74,5 @@ module.exports = {
   checkChatExists,
   findAndJoinChat,
   getUsersInChat,
+  updateUserWithSocketId,
 }

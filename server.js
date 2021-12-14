@@ -11,14 +11,12 @@ const app = express()
 const PORT = 9999
 const addRoutes = require('./routes')
 const { 
-  createUserNewChat, 
-  findAndJoinChat,
-  getUsersInChat,
+  updateUserWithSocketId,
 } = require('./dao/service')
 const clients = {}
 
 const main = async () => {
-  await mongoose.connect(process.env.MONGO_URI, {
+  mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true
   })
@@ -41,19 +39,34 @@ const main = async () => {
   const chatIO = sockjs.createServer()
 
   chatIO.on('connection', async (conn) => {
-    clients[conn.id] = conn
-
     conn.on('data', async (data) => {
-      const {event, username, chatId, message, token, sessionId} = JSON.parse(data);
-      jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+      const {event, username, chatId, message, token, socketId} = JSON.parse(data);
+      jwt.verify(token, process.env.JWT_SECRET, async (error, decoded) => {
         if (error) {
           
         }
   
-        if ((decoded.username === req.body.username) && (decoded.chatId === req.body.chatId)) {
+        if ((decoded.username === username) && (decoded.chatId === chatId)) {
           switch(event) {
             case 'session':
               // update user record with session id
+              const result = await updateUserWithSocketId({username, chatId, socketId})
+              console.log(result)
+              if (result.socketId) {
+                if (!clients[chatId]) {
+                  clients[chatId] = [conn]
+                } else {
+                  clients[chatId].push(conn)
+                }
+                
+                console.log(clients)
+
+                let message = { status: 'success', message: 'User socket id registered' }
+                conn.write(JSON.stringify(message))
+              } else {
+                let message = { status: 'error', message: 'There was an error registering the socket id' }
+                socketId.write(JSON.stringify(message))
+              }
               break
             default:
               // broadcast to chat members

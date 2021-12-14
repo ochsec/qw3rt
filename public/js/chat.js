@@ -4,7 +4,7 @@ const message = document.getElementById('message')
 const sendBtn = document.getElementById('send-btn')
 
 let messages = []
-let username, chatId, token, sessionId
+let username, chatId, token, socketId
 
 const checkForSessionVariables = async () => {
     const urlSplit = window.location.href.split('/')
@@ -13,7 +13,7 @@ const checkForSessionVariables = async () => {
     chatId = sessionStorage.getItem('chatId')
     token = sessionStorage.getItem('token')
 
-    if (!username) {
+    if (!username || !token) {
         window.location.href = '/'
     }
 
@@ -44,14 +44,14 @@ const checkForSessionVariables = async () => {
 
 sock.onopen = () => {
     const urlFrags = sock._transport.url.split('/')
-    sessionId = urlFrags[urlFrags.length - 2]
+    socketId = urlFrags[urlFrags.length - 2]
     const sendData = {
         event: 'session',
         username,
         chatId,
         message: 'Inform socket session id',
         token,
-        sessionId
+        socketId
     }
 
     sock.send(JSON.stringify(sendData))
@@ -59,7 +59,8 @@ sock.onopen = () => {
 sock.onclose = () => console.log('Websocket connection closed')
 
 sock.onmessage = (e) => {
-  const data = JSON.parse(e.data)
+    const data = JSON.parse(e.data)
+    console.log(data)
     messages.push(data)
     console.log('Build message component')
 }
@@ -75,7 +76,7 @@ const onSendClicked = () => {
         chatId,
         message: message.value,
         token,
-        sessionId
+        socketId
     }    
 
     sock.send(JSON.stringify(sendData))

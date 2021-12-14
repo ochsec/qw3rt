@@ -13,17 +13,28 @@ const findOneUserInChat = async (username, chatId) => {
   }
 }
 
-const createUser = async ({username, chatId, socketId}) => {
+const createUser = async ({username, chatId}) => {
   const user = new User({
     username,
     status: 'online',
-    chatId,
-    socketId
+    chatId
   })
   try {
     const result = await user.save()
     return result
 
+  } catch (error) {
+    return error
+  }
+}
+
+const updateUser = async ({username, chatId, socketId}) => {
+  const filter = { username, chatId }
+  const update = { socketId }
+  try {
+    const result = await User.findOneAndUpdate(filter, update, { new: true })
+    console.log(result)
+    return result
   } catch (error) {
     return error
   }
@@ -42,4 +53,5 @@ module.exports = {
   createUser,
   findOneUserInChat,
   findUsersInChat,
+  updateUser,
 }
