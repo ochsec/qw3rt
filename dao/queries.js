@@ -49,6 +49,15 @@ const updateUser = async ({username, chatId, socketId}) => {
   }
 }
 
+const findMessagesForChat = async (chatId) => {
+  try {
+    const result = await Message.find({chatId})
+    return result
+  } catch (error) {
+    return error
+  }
+}
+
 const createMessage = async ({content, username, chatId}) => {
   const message = new Message({
     content, username, chatId
@@ -66,5 +75,6 @@ module.exports = {
   findOneUserInChat,
   findUsersInChat,
   updateUser,
+  findMessagesForChat,
   createMessage,
 }

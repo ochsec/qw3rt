@@ -1,5 +1,8 @@
 //const sock = new SockJS('https://qw3rt.ochsec1.repl.co/chat')
 const sock = new SockJS('http://localhost:9999/chat')
+const copyIdBtn = document.getElementById('copy-id-btn')
+const copiedNotice = document.getElementById('copied-notice')
+const listGroup = document.getElementById('chat-window-list-group')
 const message = document.getElementById('message')
 const sendBtn = document.getElementById('send-btn')
 
@@ -38,6 +41,9 @@ const checkForSessionVariables = async () => {
     .then(data => {
         if (data.status === 'error') {
             window.location.href = '/'
+        } else {
+            messages = data.content
+            messages.forEach(msg => appendMessageList(msg))
         }
     })
 }
@@ -61,8 +67,43 @@ sock.onclose = () => console.log('Websocket connection closed')
 sock.onmessage = (e) => {
     const data = JSON.parse(e.data)
     console.log(data)
-    messages.push(data)
-    console.log('Build message component')
+    
+    if (data.event === 'broadcast') {
+        messages.push(data)
+        appendMessageList(data)
+    }
+}
+
+const onCopyIdClicked = () => {
+    copiedNotice.style.visibility = 'visible'
+    navigator.clipboard.writeText(chatId)
+    setTimeout(() => {
+        copiedNotice.style.visibility = 'hidden'
+    }, 1000)
+}
+
+const appendMessageList = (msg) => {
+    let date = new Date(msg.createdAt)
+    let grpItem = document.createElement('a')
+    let grpItemDiv = document.createElement('div')
+    let grpItemHeader = document.createElement('h5')
+    let grpItemSmall = document.createElement('small')
+    let grpItemPara = document.createElement('p')
+    grpItem.setAttribute('class', 'list-group-item list-group-item-action')
+    grpItemDiv.setAttribute('class', 'd-flex w-100 justify-content-between')
+    grpItemHeader.setAttribute('class', 'mb-1')
+    grpItemPara.setAttribute('class', 'mb-1')
+
+    grpItemSmall.textContent = `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`
+    grpItemHeader.textContent = msg.username
+    grpItemPara.textContent = msg.content
+
+    grpItemDiv.appendChild(grpItemHeader)
+    grpItemDiv.appendChild(grpItemSmall)
+    grpItem.appendChild(grpItemDiv)
+    grpItem.appendChild(grpItemPara)
+
+    listGroup.appendChild(grpItem)
 }
 
 const onSendClicked = () => {
@@ -83,4 +124,5 @@ const onSendClicked = () => {
 }
 
 document.addEventListener('DOMContentLoaded', checkForSessionVariables)
+copyIdBtn.addEventListener('click', onCopyIdClicked)
 sendBtn.addEventListener('click', onSendClicked)

@@ -3,6 +3,7 @@ const {
   createUser, 
   findUsersInChat,
   updateUser,
+  findMessagesForChat,
   createMessage
 } = require('./queries')
 
@@ -62,7 +63,12 @@ const getUsersInChat = async (chatId) => {
 }
 
 const updateUserWithSocketId = async ({username, chatId, socketId}) => {
-  const result = updateUser({username, chatId, socketId})
+  const result = await updateUser({username, chatId, socketId})
+  return result
+}
+
+const getMessagesForChat = async (chatId) => {
+  const result = await findMessagesForChat(chatId)
   return result
 }
 
@@ -85,5 +91,6 @@ module.exports = {
   findAndJoinChat,
   getUsersInChat,
   updateUserWithSocketId,
+  getMessagesForChat,
   saveMessage
 }

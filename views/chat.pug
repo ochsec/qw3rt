@@ -2,9 +2,14 @@ extends layout
 
 block content
   div(id="chat-container")
-    h4(id="chatroom-id")= chatId
+    div(id="chat-id-header") Chat ID: 
+      span(id="chatroom-id")= chatId
+      button(type="button", id="copy-id-btn")
+        i(class="far fa-file")
+      span(id="copied-notice") Chat ID Copied
 
-    div(id="chat-window", class="card") Stuff
+    div(id="chat-window", class="card")
+      div(id="chat-window-list-group", class="list-group")
 
     form(id="message-form" novalidate)
       div(class="input-group")

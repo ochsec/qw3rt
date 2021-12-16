@@ -4,10 +4,21 @@
   margin-right: auto;
 }
 
-#chatroom-id {
+#chat-id-header {
   color: #f5f6f7;
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+}
+
+#copy-id-btn, #copied-notice {
+  margin-left: 10px;
+}
+
+#copied-notice {
+  visibility: hidden;
 }
 
 #chat-window {
   height: 70vh;
+  overflow-y: scroll;
 }

@@ -54,8 +54,6 @@ const main = async () => {
                 } else {
                   clients[chatId].push(conn)
                 }
-                
-                console.log(clients)
 
                 let message = { 
                   status: 'success', 
@@ -83,7 +81,9 @@ const main = async () => {
                 user.write(JSON.stringify({
                   status: 'success',
                   event: 'broadcast',
-                  message: result.content
+                  content: result.content,
+                  username: result.username,
+                  createdAt: result.createdAt
                 }))
               })
           }

@@ -19,6 +19,8 @@ const messageSchema = new Schema({
   },
   username: String,
   chatId: String,
+}, {
+  timestamps: true
 })
 
 module.exports = {

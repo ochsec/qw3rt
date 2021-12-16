@@ -4,6 +4,7 @@ const {
   createUserNewChat, 
   findAndJoinChat,
   getUsersInChat,
+  getMessagesForChat,
 } = require('./dao/service')
 
 const addRoutes = (app) => {
@@ -34,7 +35,12 @@ const addRoutes = (app) => {
               username: data.username,
               chatId: data.chatId
             }, process.env.JWT_SECRET, { expiresIn: '30 days' })
-            response = { status: 'success', token, username: data.username, chatId: data.chatId }
+            response = { 
+              status: 'success', 
+              token, 
+              username: data.username, 
+              chatId: data.chatId
+            }
           }
           
           res.json(response)
@@ -48,16 +54,18 @@ const addRoutes = (app) => {
         res.render('chat', {chatId: req.params.id})
       })
     
-      app.post('/:id', (req, res) => {
-        jwt.verify(req.body.token, process.env.JWT_SECRET, (error, decoded) => {
+      app.post('/:id', async (req, res) => {
+        jwt.verify(req.body.token, process.env.JWT_SECRET, async (error, decoded) => {
           if (error) {
             res.json({ status: 'error', error })
           }
-    
+
           console.log('decoded.username: ' + decoded.username)
           console.log('decoded.chatId: ' + decoded.chatId)
           if ((decoded.username === req.body.username) && (decoded.chatId === req.body.chatId)) {
-            res.json({ status: 'success', message: 'jsonwebtoken verified' })
+            const messages = await getMessagesForChat(req.params.id)
+            console.log('Got messages for chat')
+            res.json({ status: 'success', message: 'jsonwebtoken verified', content: messages })
           } else {
             res.json({ status: 'error', message: "username or chatId don't match" })
           }
