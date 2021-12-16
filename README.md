@@ -2,6 +2,8 @@
 
 qw3rt is a private chat app, where participants join a chat by way of an unguessable uuid.
 
+### [Link to App](https://qw3rt.ochsec1.repl.co/)
+
 ## How to use
 ### Start a new chat: 
 Enter a username and click Create Chat under the Create tab. Upon entering the chat, you'll see a Chat Id at the top of the screen. You can copy the chat id with click of a button and store it/send it.
