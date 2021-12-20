@@ -1,5 +1,5 @@
-//const sock = new SockJS('https://qw3rt.ochsec1.repl.co/chat')
-const sock = new SockJS('http://localhost:9999/chat')
+const sock = new SockJS('https://qw3rt.ochsec1.repl.co/chat')
+//const sock = new SockJS('http://localhost:9999/chat')
 const copyIdBtn = document.getElementById('copy-id-btn')
 const copiedNotice = document.getElementById('copied-notice')
 const listGroup = document.getElementById('chat-window-list-group')
@@ -107,7 +107,7 @@ const appendMessageList = (msg) => {
 }
 
 const onSendClicked = () => {
-    if (message.value === 0) {
+    if (message.value === '' || message.value.length === 0) {
         return
     }
 
@@ -121,6 +121,8 @@ const onSendClicked = () => {
     }    
 
     sock.send(JSON.stringify(sendData))
+
+    message.value = ''
 }
 
 document.addEventListener('DOMContentLoaded', checkForSessionVariables)

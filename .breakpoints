@@ -1,27 +1,35 @@
 {
   "files": {
+    ".gitignore": [
+      {
+        "id": "97bf51d9-89c1-4cb9-8bdc-82dd758d54dc",
+        "line": 3,
+        "version": 23,
+        "index": 18
+      }
+    ],
     "dao/service.js": [
       {
         "id": "aeb8ff86-69cb-4b28-8655-5b4f91d0e053",
-        "line": 15,
-        "version": 1690,
-        "index": 308
+        "line": 4,
+        "version": 1691,
+        "index": 57
       }
     ],
     "public/js/index.js": [
       {
         "id": "02be9ada-81a4-474d-8d6b-7b3996e5e02e",
-        "line": 85,
-        "version": 3396,
-        "index": 2629
+        "line": 98,
+        "version": 3397,
+        "index": 3255
       }
     ],
     "server.js": [
       {
         "id": "e8abc3d3-80f7-49b2-afc4-1e0ded6e7f40",
-        "line": 51,
-        "version": 2871,
-        "index": 1243
+        "line": 5,
+        "version": 2872,
+        "index": 120
       }
     ],
     "test/user.spec.js": [
@@ -35,9 +43,9 @@
     "views/index.pug": [
       {
         "id": "fc91d741-607a-4600-a2fe-482b3e4d2524",
-        "line": 14,
-        "version": 1630,
-        "index": 471
+        "line": 13,
+        "version": 1631,
+        "index": 425
       }
     ]
   }
