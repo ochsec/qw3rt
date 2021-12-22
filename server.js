@@ -47,7 +47,6 @@ const main = async () => {
             case 'session':
               // update user record with session id
               result = await updateUserWithSocketId({username, chatId, socketId})
-              console.log(result)
               if (result.socketId) {
                 if (!clients[chatId]) {
                   clients[chatId] = [conn]

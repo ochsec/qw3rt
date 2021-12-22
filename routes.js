@@ -60,11 +60,8 @@ const addRoutes = (app) => {
             res.json({ status: 'error', error })
           }
 
-          console.log('decoded.username: ' + decoded.username)
-          console.log('decoded.chatId: ' + decoded.chatId)
           if ((decoded.username === req.body.username) && (decoded.chatId === req.body.chatId)) {
             const messages = await getMessagesForChat(req.params.id)
-            console.log('Got messages for chat')
             res.json({ status: 'success', message: 'jsonwebtoken verified', content: messages })
           } else {
             res.json({ status: 'error', message: "username or chatId don't match" })

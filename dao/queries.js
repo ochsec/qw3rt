@@ -42,7 +42,6 @@ const updateUser = async ({username, chatId, socketId}) => {
   const update = { socketId }
   try {
     const result = await User.findOneAndUpdate(filter, update, { new: true })
-    console.log(result)
     return result
   } catch (error) {
     return error
