@@ -50,7 +50,7 @@ const updateUser = async ({username, chatId, socketId}) => {
 
 const findMessagesForChat = async (chatId) => {
   try {
-    const result = await Message.find({chatId})
+    const result = await Message.find({chatId}).sort({ createdAt: -1 })
     return result
   } catch (error) {
     return error

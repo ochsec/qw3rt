@@ -24,7 +24,6 @@ const checkForSessionVariables = async () => {
         window.location.href = '/'
     }
 
-    // Todo: Verify user
     fetch(`/${chatId}`, {
         method: 'POST',
         cache: 'no-cache',
